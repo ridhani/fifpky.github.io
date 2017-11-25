@@ -4,6 +4,7 @@
 @media (max-width : 580px ){
 #index_9262 {
 	max-width: 100%;
+	width: 100%;
 }
 
 }
@@ -11,4 +12,6 @@ table {
 	float: none;
 	width: 100%;
 }
-
+#index_9262 {
+	max-width: 100%;
+	width: 100%;
