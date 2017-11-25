@@ -1,5 +1,9 @@
 @media (max-width: 1000px){
 }
 
-@media (max-width : 480px ){
+@media (max-width : 580px ){
+}
+table {
+	float: none;
+	width: 100%;
 }
