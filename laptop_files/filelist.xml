@@ -1,5 +1,14 @@
 <xml xmlns:o="urn:schemas-microsoft-com:office:office">
- <o:MainFile HRef="../laptop.htm"/>
+ <o:File HRef="laptop_17906_image001.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image002.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image003.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image004.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image005.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image006.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image007.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image008.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image009.png" PublicationID="laptop_17906"/>
+ <o:File HRef="laptop_17906_image010.png" PublicationID="laptop_17906"/>
  <o:File HRef="laptop_15466_image001.png" PublicationID="laptop_15466"/>
  <o:File HRef="laptop_15466_image002.png" PublicationID="laptop_15466"/>
  <o:File HRef="laptop_15466_image003.png" PublicationID="laptop_15466"/>
@@ -14,5 +23,20 @@
  <o:File HRef="laptop_15466_image012.png" PublicationID="laptop_15466"/>
  <o:File HRef="laptop_15466_image013.png" PublicationID="laptop_15466"/>
  <o:File HRef="laptop_15466_image014.png" PublicationID="laptop_15466"/>
+ <o:MainFile HRef="../laptop.htm"/>
+ <o:File HRef="laptop_14441_image001.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image002.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image003.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image004.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image005.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image006.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image007.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image008.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image009.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image010.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image011.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image012.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image013.png" PublicationID="laptop_14441"/>
+ <o:File HRef="laptop_14441_image014.png" PublicationID="laptop_14441"/>
  <o:File HRef="filelist.xml"/>
 </xml>
