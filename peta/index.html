@@ -48,8 +48,8 @@ leafinit
 	var map = L.map('map', {
 		crs: L.CRS.Simple
 	});
-var bounds = [[0,0], [800,800]]; 
- var image = L.imageOverlay('a2.svg', bounds).addTo(map); 
+var bounds = [[0,0], [500,500]]; 
+ var image = L.imageOverlay('path3772.png', bounds).addTo(map); 
  var kecamatanlayer=L.geoJson(datakecamatan).addTo(map);	 
 function getColor(d) {
     return d > 1000 ? '#800026' :
