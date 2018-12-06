@@ -1,56 +1,93 @@
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-	<title>Sistem Informasi</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta name="generator" content="Geany 1.33" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
-  <meta http-equiv="cache-control" content="max-age=0" />
-  <meta http-equiv="expires" content="0" />
-  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-  <meta http-equiv="pragma" content="no-cache" />
-<!--
-leafinit
--->
-<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-<script src="lib/leaflet/leaflet.js"></script>
-<script src="data/countries.js"></script>
-<script src="data/kecamatan.js"></script>
-<STYLE TYPE="TEXT/CSS">
-#map {height:700px;}
-.info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; } .info h4 { margin: 0 0 5px; color: #777; }
-.legend { text-align: left; line-height: 18px; color: #555; } .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }</style>
-
-</STYLE>
-
+  <link rel="stylesheet" href="leaflet.css">
+  <script src="leaflet.js"></script>
+  <script src="geojson.js"></script>
+   <script src="kecamatan.js"></script>
+  <script src="Leaflet.Coordinates-0.1.3.src.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="Leaflet.Coordinates-0.1.3.css" />
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+    
+    #map {
+      height: 75%;
+    }
+  </style>
 </head>
 
 <body>
-	<h1> SISTEM INFORMASI </H1>
-	<div id="info">My Header</div>
-	
-	<DIV id="map"> </DIV>
-	<script>
-	//var map=L.map('map').setView([0,0],13);
-//	var countriesLayer=L.geoJson(countries).addTo(map) ;
-	//map.fitBounds(countriesLayer.getBounds());
-//data kec
-//{
- //// "type": "FeatureCollection",
-//  "features": []
-//}
+  <div id="map"></div>
 
-	var map = L.map('map', {
-		crs: L.CRS.Simple
-	});
-var bounds = [[0,0], [500,500]]; 
- var image = L.imageOverlay('path3772.png', bounds).addTo(map); 
- var kecamatanlayer=L.geoJson(datakecamatan).addTo(map);	 
+  <button id="fly1">Fly to 1</button>
+  <button id="fly2">Fly to 2</button>
+
+  <br />
+
+  <div id="container"></div>
+
+  <script>
+    ////////////////////////////////////////////////////////////////////////////
+    // Conversion from (x, y) raster image coordinates to equivalent of latLng
+    // Taken from Leaflet tutorial "Non-geographical maps"
+    // http://leafletjs.com/examples/crs-simple/crs-simple.html
+    ////////////////////////////////////////////////////////////////////////////
+    var yx = L.latLng;
+
+    var xy = function(x, y) {
+      if (L.Util.isArray(x)) { // When doing xy([x, y]);
+        return yx(x[1], x[0]);
+      }
+      return yx(y, x); // When doing xy(x, y);
+    };
+
+
+    var minZoom = 0;
+    var maxZoom = 5;
+    var img = [
+      2244, // original width of image `karta.jpg` => x / ~longitude (0 is left, 3831 is right)
+      3180 // original height of image => y / ~ reverse of latitude (0 is top, 3101 is bottom)
+    ];
+
+    /**
+     * Tile 0/0/0 is 256 x 256 px, and so are all other tiles.
+     * See https://stackoverflow.com/questions/34638887/leaflet-custom-coordinates-on-image
+     * http://leafletjs.com/reference-1.0.3.html#transformation
+     * 256 px * 2^4 = 4096 px
+     */
+
+    L.CRS.MySimple = L.extend({}, L.CRS.Simple, {
+      //                      coefficients: a      b    c     d
+      transformation: new L.Transformation(1 / 16, 0, 1 / 16, 0) // Compute a and c coefficients so that  tile 0/0/0 is from [0, 0] to [4096, 4096]
+    });
+
+    var bounds = L.latLngBounds([
+      xy(0, 0),
+      xy(img)
+    ]);
+
+    var map = L.map("map", {
+      crs: L.CRS.MySimple, // http://leafletjs.com/reference-1.0.3.html#map-crs
+      maxBounds: bounds.pad(.5), // http://leafletjs.com/reference-1.0.3.html#map-maxbounds
+      minZoom: minZoom,
+      maxZoom: maxZoom
+    }).setView([48.85, 2.35], 0);
+	
+	<!-- https://commenthol.github.io/leaflet-rastercoords/example/tiles/{z}/{x}/{y}.png -->
+
+    <!-- L.tileLayer('a2.svg', { -->
+      <!-- bounds: bounds, // http://leafletjs.com/reference-1.0.3.html#gridlayer-bounds -->
+      <!-- noWrap: true, -->
+      <!-- attribution: 'Map <a href="https://commons.wikimedia.org/wiki/' + -->
+        <!-- 'File:Karta_%C3%B6ver_Europa,_1672_-_Skoklosters_slott_-_95177.tif">' + -->
+        <!-- 'Karta över Europa, 1672 - Skoklosters</a> under ' + -->
+        <!-- '<a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>' -->
+    <!-- }).addTo(map);  -->
+	 var kecamatanlayer=L.geoJson(datakecamatan).addTo(map);	 
 function getColor(d) {
     return d > 1000 ? '#800026' :
            d > 500  ? '#BD0026' :
@@ -71,24 +108,7 @@ function style(feature) {
         fillOpacity: 0.7
     };
 }
-
-// control that shows state info on hover
-	var info = L.control();
-
-	info.onAdd = function (map) {
-		this._div = L.DomUtil.create('div', 'info');
-		this.update();
-		return this._div;
-	};
-
-	info.update = function (props) {
-		this._div.innerHTML = '<h4>SISTEM INFORMASI KASONGAN</h4>' +  (props ?
-			'<b>' + props.kecamatan + '</b><br />' + props.populasi + ' people / mi<sup>2</sup>'
-			: 'Hover over a state');
-	};
-
-	info.addTo(map);
-
+	
 	function highlightFeature(e) {
 		var layer = e.target;
 
@@ -105,7 +125,7 @@ function style(feature) {
 
 		info.update(layer.feature.properties);
 	}
-
+	
 	var geojson;
 
 	function resetHighlight(e) {
@@ -114,7 +134,7 @@ function style(feature) {
 	}
 
 	function zoomToFeature(e) {
-		map.fitBounds(e.target.getBounds());
+		//map.fitBounds(e.target.getBounds());
 	}
 
 	function onEachFeature(feature, layer) {
@@ -125,11 +145,13 @@ function style(feature) {
 		});
 	}
 
-	geojson = L.geoJson(datakecamatan, {
+geojson = L.geoJson(datakecamatan, {
 		style: style,
+		 coordsToLatLng: function(coords) {
+          return xy(coords) // Just use xy conversion instead of rc.unproject
+        },
 		onEachFeature: onEachFeature
 	}).addTo(map);
-
 var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
@@ -153,16 +175,200 @@ legend.onAdd = function (map) {
 	};
 
 	legend.addTo(map);
+L.imageOverlay('a2.svg', bounds).addTo(map);
+map.setMaxBounds(bounds);
+    ////////////////////////////////////////////////////////////////////////////
+    // FlyTo
+    ////////////////////////////////////////////////////////////////////////////
 
-	
+    var fly1 = document.getElementById("fly1");
+    var fly2 = document.getElementById("fly2");
+    var container = document.getElementById("container");
+
+    fly1.addEventListener("click", function(event) {
+      event.preventDefault();
+      map.flyTo(xy(0, 0));
+    });
+
+    fly2.addEventListener("click", function(event) {
+      event.preventDefault();
+      map.flyTo(xy(img));
+    });
 
 
- map.fitBounds(bounds); 
+    ////////////////////////////////////////////////////////////////////////////
+    // Adapted from leaflet-rastercoords example
+    // https://commenthol.github.io/leaflet-rastercoords/
+    ////////////////////////////////////////////////////////////////////////////
 
-//L.geoJson(datakecamatan, {style: style}).addTo(map);
+    // add layer control object
+    L.control.layers({}, {
+      'Polygon': layerPolygon(map), // no longer need for rc, using xy conversion instead
+      'Countries': layerCountries(map),
+      'Bounds': layerBounds(map, img),
+      'Info': layerGeo(map)
+    }, {
+      collapsed: false
+    }).addTo(map)
+
+    /**
+     * layer with markers
+     */
+    function layerBounds(map, img) {
+      // set marker at the image bound edges
+      var layerBounds = L.layerGroup([
+        L.marker(xy([0, 0])).bindPopup('[0,0]'), // Just use xy conversion instead of rc.unproject
+        L.marker(xy(img)).bindPopup(JSON.stringify(img)) // Just use xy conversion instead of rc.unproject
+      ])
+      map.addLayer(layerBounds)
+
+      // set markers on click events in the map
+      map.on('click', function(event) {
+        // to obtain raster coordinates from the map use `project` => no longer needed!
+        var coord = event.latlng;
+        // to set a marker, ... in raster coordinates in the map use `unproject` => no longer needed!
+        var marker = L.marker(coord)
+          .addTo(layerBounds)
+        marker.bindPopup(coord.toString() + "<br />x: " + coord.lng + "<br />y: " + coord.lat)
+          .openPopup()
+      })
+
+      return layerBounds
+    }
+
+    /**
+     * layer using geoJson data for countries adding a circle marker
+     */
+    function layerCountries(map) {
+      var layerCountries = L.geoJson(window.countries, {
+        // correctly map the geojson coordinates on the image
+        coordsToLatLng: function(coords) {
+          return xy(coords) // Just use xy conversion instead of rc.unproject
+        },
+        // add a popup content to the marker
+        onEachFeature: function(feature, layer) {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(feature.properties.name)
+
+            //////////////////////////////////////////////////////////////
+            // Add a flyTo button
+            //////////////////////////////////////////////////////////////
+            var button = document.createElement("button");
+            
+            button.innerHTML = feature.properties.name;
+            button.addEventListener("click", function (event) {
+              event.preventDefault();
+              //map.flyTo(layer.getLatLng(), 5); // This works obviously, but just to demonstrate use of xy conversion:
+              map.flyTo(xy(feature.geometry.coordinates), 5);
+              
+              map.once("moveend", function () {
+                layer.openPopup();
+              });
+            });
+            
+            container.appendChild(button);
+            
+            //////////////////////////////////////////////////////////////
+
+          }
+        },
+        pointToLayer: function(feature, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 8,
+            fillColor: '#800080',
+            color: '#D107D1',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          })
+        }
+      })
+      map.addLayer(layerCountries)
+      return layerCountries
+    }
+
+    /**
+     * layer with red markers
+     */
+    function layerGeo(map) {
+      var imgDir = 'https://commenthol.github.io/leaflet-rastercoords/example/images/'
+      var redMarker = L.icon({
+        iconUrl: imgDir + 'marker-icon-red.png',
+        iconRetinaUrl: imgDir + 'marker-icon-red-2x.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [-0, -31],
+        shadowUrl: imgDir + 'marker-shadow.png',
+        shadowSize: [41, 41],
+        shadowAnchor: [14, 41]
+      })
+      var layerGeo = L.geoJson(window.geoInfo, {
+        // correctly map the geojson coordinates on the image
+        coordsToLatLng: function(coords) {
+          return xy(coords) // Just use xy conversion instead of rc.unproject
+        },
+        // add a popup content to the marker
+        onEachFeature: function(feature, layer) {
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(feature.properties.name)
+          }
+        },
+        pointToLayer: function(feature, latlng) {
+          return L.marker(latlng, {
+            icon: redMarker
+          })
+        }
+      })
+      map.addLayer(layerGeo)
+      return layerGeo
+    }
+
+    /**
+     * layer drawing a polygon
+     */
+    function layerPolygon(map, rc) {
+      var points = window.polygon.map(function(point) {
+        return xy(point.x, point.y) // Just use xy conversion instead of rc.unproject
+      })
+      var layerPolygon = L.polygon([points])
+      map.addLayer(layerPolygon)
+      return layerPolygon
+    }
 
 
-	</script>
+    ////////////////////////////////////////////////////////////////////////////
+    // Using Leaflet.Coordinates plugin at https://github.com/MrMufflon/Leaflet.Coordinates
+    // As done in https://stackoverflow.com/questions/34638887/leaflet-custom-coordinates-on-image
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Patch first to avoid longitude wrapping.
+    L.Control.Coordinates.include({
+      _update: function(evt) {
+        var pos = evt.latlng,
+          opts = this.options;
+        if (pos) {
+          //pos = pos.wrap(); // Remove that instruction.
+          this._currentPos = pos;
+          this._inputY.value = L.NumberFormatter.round(pos.lat, opts.decimals, opts.decimalSeperator);
+          this._inputX.value = L.NumberFormatter.round(pos.lng, opts.decimals, opts.decimalSeperator);
+          this._label.innerHTML = this._createCoordinateLabel(pos);
+        }
+      }
+    });
+
+    L.control.coordinates({
+      position: "bottomleft",
+      decimals: 0, //optional default 4
+      decimalSeperator: ".", //optional default "."
+      labelTemplateLat: "Y: {y}", //optional default "Lat: {y}"
+      labelTemplateLng: "X: {x}", //optional default "Lng: {x}"
+      enableUserInput: true, //optional default true
+      useDMS: false, //optional default false
+      useLatLngOrder: false, //ordering of labels, default false-> lng-lat
+      markerType: L.marker, //optional default L.marker
+      markerProps: {} //optional default {}
+    }).addTo(map);
+  </script>
 </body>
 
 </html>
